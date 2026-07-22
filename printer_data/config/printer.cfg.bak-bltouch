@@ -9,34 +9,15 @@
 # выше и убрав [load_cell]. Вместе с ним временно недоступны макросы
 # Z_OFFSET / SIMPLE_Z_OFFSET / AUTO_Z_OFFSET (см. macro.cfg).
 
-# Штатный тензодатчик Klipper как ОСНОВНОЙ щуп: касается сам нозл.
-# counts_per_gram / reference_tare_counts лежат в блоке SAVE_CONFIG внизу.
-# Замеры чувствительности по столу (нажатие рукой, шум ±1..2 г):
-#   перед-левый (над датчиком) 3422 г | перед-правый 449 | центр 841
-#   зад-левый 523 | зад-правый +535   -> худший SNR 255x, порога 75 г хватает с запасом.
-# Знак отклика в разных точках разный (рычаг) — не важно: прошивка сравнивает
-# модуль (src/trigger_analog.c:92, тип "abs_ge").
-[load_cell_probe]
+# Штатный тензодатчик Klipper на тех же пинах, что были у prtouch.
+# Пока это ТОЛЬКО датчик силы, не щуп — с [bltouch] не конфликтует.
+# counts_per_gram и reference_tare_counts появятся здесь после LOAD_CELL_CALIBRATE.
+[load_cell]
 sensor_type: hx711
 sclk_pin: PA4          # было sensor0_clk_pin в prtouch.cfg
 dout_pin: PC6          # было sensor0_sdo_pin
 sample_rate: 80        # железо тикает 12.5 мс (src/hx711s.c: CLOCK_FREQ/10000*125)
-#gain: A-128           # дефолт; для HX711 это МАКСИМУМ, выше не бывает
-
-trigger_force: 75      # г. Документация: 75 г на порог => до ~350 г реального пика
-force_safety_limit: 2000   # г. Превышение -> аварийный стоп "too much force"
-
-# Сопло и есть щуп, поэтому x_offset/y_offset = 0 (дефолт, не задаём).
-z_offset: 0            # выставить командой PROBE_CALIBRATE после первого G28
-
-speed: 2               # мм/с. Медленно: перерегулирование растёт со скоростью
-lift_speed: 5
-samples: 2
-sample_retract_dist: 2
-samples_tolerance: 0.05
-samples_tolerance_retries: 3
-
-# drift_filter_cutoff_frequency: 0.8   # требует SciPy, её в klippy-env нет
+#gain: A-128           # дефолт
 
 #[include adxl.cfg]
 [exclude_object]
