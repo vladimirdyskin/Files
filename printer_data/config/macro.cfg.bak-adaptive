@@ -37,13 +37,12 @@ gcode:
     M104 S{EXTRUDER_TEMP};
     
     BED_MESH_CLEAR
-
-    # Адаптивный меш: щупаем ТОЛЬКО зону под деталью (из [exclude_object],
-    # которые пишет слайсер). Меньше точек, всегда свежий замер под текущую
-    # печать, и правый край X>189.76 (недостижим щупом из-за x_offset BLTouch)
-    # не участвует, если деталь не у правого борта.
-    # Если слайсер не задал объекты — ядро само снимает полный меш.
-    BED_MESH_CALIBRATE ADAPTIVE=1 ADAPTIVE_MARGIN=5
+    # G0 Z0.15
+    # G92 Z0 
+    # BED_MESH_CALIBRATE
+    # Z_OFFSET    
+    # PRTOUCH_PROBE_ZOFFSET
+    BED_MESH_PROFILE LOAD=default
 
     M109 S{EXTRUDER_TEMP}
     M107 ; Part fan off for the first layer
